@@ -1,0 +1,21 @@
+page-login {
+
+    $text-input-md-highlight-color-invalid: transparent;
+    $text-input-md-highlight-color-valid: transparent;
+    $text-input-md-show-invalid-highlight: transparent;
+    $text-input-md-highlight-color: transparent;
+    $text-input-md-show-valid-highlight: transparent;
+
+    .parent {
+        position: relative;
+    }
+    .child {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .no-bg {
+        background: none;
+    }
+}
