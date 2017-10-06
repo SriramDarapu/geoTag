@@ -1,26 +1,26 @@
 <ion-content padding id="page4">
-  <form id="login-form1" class="child">
+  <form id="login-form1" class="child" (ngSubmit)="onSubmit(regForm)" #regForm="ngForm">
     <div>
-      <img src="assets/img/tEvv0laYTWymiLXNNWx4_person.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
+      <img src="assets/img/avatar.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
     </div>
     <!-- <h1 style="text-align: center; color: white">GeoTag</h1>  style="background:url(http://iphone7papers.com/wp-content/uploads/papers.co-ns33-bicycle-dark-bw-minimal-nature-33-iphone6-wallpaper-250x444.jpg) no-repeat center;background-size:cover;" -->
     <div class="spacer" style="width:300px;height:29px;" id="login-spacer4"></div>
     <ion-list id="login-list2">
-      <ion-item id="login-input1" class="no-bg" color="danger">
+      <ion-item id="login-input1">
         <ion-label floating>
           Mobile Number
         </ion-label>
-        <ion-input type="text" placeholder=""></ion-input>
+        <ion-input type="number" name="phone" ngModel></ion-input>
       </ion-item>
-      <ion-item id="login-input2" class="no-bg">
+      <ion-item id="login-input2">
         <ion-label floating>
           Email ID
         </ion-label>
-        <ion-input type="email" placeholder=""></ion-input>
+        <ion-input type="email" name="email" ngModel></ion-input>
       </ion-item>
     </ion-list>
     <div class="spacer" style="width:300px;height:24px;" id="login-spacer5"></div>
-    <button id="login-button1" ion-button color="positive" block on-click="goToOTP()">
+    <button id="login-button1" ion-button color="positive" block type="submit" [disabled]="!regForm.valid">
       Submit
     </button>
   </form>

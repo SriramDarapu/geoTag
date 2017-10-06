@@ -1,46 +1,62 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { HttpModule } from '@angular/http';
+import { Camera } from '@ionic-native/camera';
+import { Geolocation } from '@ionic-native/geolocation';
+import { NativeGeocoder } from '@ionic-native/native-geocoder';
+
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
 import { CartPage } from '../pages/cart/cart';
 import { CloudPage } from '../pages/cloud/cloud';
-import { LoginPage } from '../pages/login/login';
-import { OTPPage } from '../pages/o-tp/o-tp';
-import { CompleteProfilePage } from '../pages/complete-profile/complete-profile';
-
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { ComponentsModule } from '../components/components.module';
+import { QrCodePageModule } from '../pages/qr-code/qr-code.module';
+import { EditProfilePageModule } from '../pages/edit-profile/edit-profile.module';
+import { DealInfoPageModule } from '../pages/deal-info/deal-info.module';
+import { LoginPageModule } from '../pages/login/login.module';
+import { OTPPageModule } from '../pages/o-tp/otp.module';
+import { CompleteProfilePageModule } from '../pages/complete-profile/complete-profile.module';
+import { HomePageModule } from '../pages/home/home.module';
+import { AuthService } from '../services/auth.service';
+import { UserDataService } from '../services/user-data.service';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
     CartPage,
     CloudPage,
-    LoginPage,
-    OTPPage,
-    CompleteProfilePage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    HttpModule,
+    ComponentsModule,
+    LoginPageModule,
+    OTPPageModule,
+    CompleteProfilePageModule,
+    HomePageModule,
+    EditProfilePageModule,
+    DealInfoPageModule,
+    QrCodePageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
     CartPage,
     CloudPage,
-    LoginPage,
-    OTPPage,
-    CompleteProfilePage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    Camera,
+    Geolocation,
+    NativeGeocoder,
+    AuthService,
+    UserDataService
   ]
 })
 export class AppModule {}

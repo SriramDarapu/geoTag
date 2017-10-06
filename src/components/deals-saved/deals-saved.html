@@ -1,0 +1,19 @@
+<ion-list>
+
+  <ion-item-sliding *ngFor="let deal of dealsObj">
+    <ion-item (click)="showQRCode()">
+      <ion-avatar item-start>
+        <img [src]="deal.url">
+      </ion-avatar>
+      <h2>{{ deal.name }}</h2>
+      <p>{{ deal.desc }}</p>
+    </ion-item>
+    <ion-item-options>
+      <button ion-button color="danger" icon-start (click)="showConfirm()">
+        <ion-icon name="trash"></ion-icon>
+        Delete
+      </button>
+    </ion-item-options>
+  </ion-item-sliding>
+
+</ion-list>

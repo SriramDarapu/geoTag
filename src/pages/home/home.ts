@@ -1,41 +1,81 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController } from 'ionic-angular';
-
-declare var google: any;
+import { Component } from '@angular/core';
+import { NavController, ActionSheetController, Platform } from 'ionic-angular';
+import { EditProfilePage } from '../edit-profile/edit-profile';
+import { UserDataService } from '../../services/user-data.service';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  map: any;
 
-  @ViewChild('map') mapRef: ElementRef;
+  userData = {};
+  pet = "nearme";
+  imageSrc = 'https://raw.githubusercontent.com/ionic-team/ionic-preview-app/master/src/assets/img/avatar-gollum.jpg';
 
-  pet = "puppies";
-
-  constructor(public navCtrl: NavController) {
-  }
+  constructor(
+    public navCtrl: NavController, 
+    private actionSheetCtrl: ActionSheetController, 
+    private platform: Platform, 
+    private userDataService: UserDataService
+  ) {  }
 
   ionViewDidLoad() {
-    console.log(this.mapRef);
-    this.showMap();
+    this.userData = this.userDataService.getUserData();
+    const imgSrc = this.userDataService.getImageData();
+    if(imgSrc) {
+      this.imageSrc = imgSrc;
+    }
   }
 
   segmentChanged(data) {
     // if(data.value == "puppies"){
     //   this.showMap();
     // }
-    
   }
 
-  showMap() {
-    const location = new google.maps.LatLng(51.7, -0.123);
-    const options = {
-      center: location,
-      zoom: 10
-    };
-    this.map = new google.maps.Map(this.mapRef.nativeElement, options);
+  presentActionSheet() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Change your picture',
+      cssClass: 'action-sheets-basic-page',
+      buttons: [
+        {
+          text: 'Delete',
+          role: 'destructive',
+          icon: !this.platform.is('ios') ? 'trash' : null,
+          handler: () => {
+            console.log('Delete clicked');
+          }
+        },
+        {
+          text: 'Camera',
+          icon: !this.platform.is('ios') ? 'camera' : null,
+          handler: () => {
+            console.log('Share clicked');
+          }
+        },
+        {
+          text: 'Gallery',
+          icon: !this.platform.is('ios') ? 'images' : null,
+          handler: () => {
+            console.log('Play clicked');
+          }
+        },
+        {
+          text: 'Cancel',
+          role: 'cancel', // will always sort to be on the bottom
+          icon: !this.platform.is('ios') ? 'close' : null,
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+  gotoEditProfile() {
+    this.navCtrl.push(EditProfilePage);
   }
   
 }

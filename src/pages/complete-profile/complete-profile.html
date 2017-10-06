@@ -1,45 +1,7 @@
 <ion-content padding id="page6">
-  <h3 id="completeProfile-heading1" style="color:#000000;text-align:center;">
+  <!-- <h3 id="completeProfile-heading1" style="color:#000000;text-align:center;">
     Complete Profile
-  </h3>
-  <div class="spacer" style="width:300px;height:48px;" id="completeProfile-spacer10"></div>
-  <div>
-    <img src="assets/img/UawHDwncTKCUTSVm5FAw_person.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
-  </div>
-  <div class="spacer" style="width:300px;height:23px;" id="completeProfile-spacer8"></div>
-  <form id="completeProfile-form3">
-    <ion-item id="completeProfile-input6">
-      <ion-label floating>
-        Name
-      </ion-label>
-      <ion-input type="text" placeholder="Name"></ion-input>
-    </ion-item>
-    <ion-item id="completeProfile-input7">
-      <ion-label floating>
-        Mobile Number
-      </ion-label>
-      <ion-input type="text" placeholder="Mobile Number"></ion-input>
-    </ion-item>
-    <ion-item id="completeProfile-input8">
-      <ion-label floating>
-        Email ID
-      </ion-label>
-      <ion-input type="email" placeholder="Email ID"></ion-input>
-    </ion-item>
-    <ion-item id="completeProfile-input9">
-      <ion-label floating>
-        Date of Birth
-      </ion-label>
-      <ion-input type="date"></ion-input>
-    </ion-item>
-    <ion-item id="completeProfile-input10">
-      <ion-label floating>
-        Location
-      </ion-label>
-      <ion-input type="text"></ion-input>
-    </ion-item>
-  </form>
-  <button id="completeProfile-button4" ion-button color="positive" block on-click="goToHome()">
-    Submit
-  </button>
+  </h3> -->
+  <!-- <div class="spacer" style="width:300px;height:48px;" id="completeProfile-spacer10"></div> -->
+  <edit-profile *ngFor="let dateRef of data" [userData]="dateRef"></edit-profile>
 </ion-content>

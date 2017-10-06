@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { NgForm } from '@angular/forms';
+
 import { CompleteProfilePage } from '../complete-profile/complete-profile';
-import { HomePage } from '../home/home';
+import { AuthService } from '../../services/auth.service';
+import { UserDataService } from '../../services/user-data.service';
 
 @Component({
   selector: 'page-o-tp',
@@ -9,13 +12,31 @@ import { HomePage } from '../home/home';
 })
 export class OTPPage {
 
-  constructor(public navCtrl: NavController) {
+  constructor(public navCtrl: NavController, private authService: AuthService, private userDataService: UserDataService) {
   }
-  goToCompleteProfile(params){
-    if (!params) params = {};
-    this.navCtrl.push(CompleteProfilePage);
-  }goToHome(params){
-    if (!params) params = {};
-    this.navCtrl.push(HomePage);
+
+  onSubmit(form: NgForm) {
+    const data = {
+      otp: +form.value.otp
+    };
+    // console.log(+form.value.otp);
+    
+    this.authService.validateOtp(data).subscribe(
+      (res) => {
+        if(res.success) {
+          console.log(res.success.data.data);        
+          this.userDataService.setUserData(res.success.data.data);
+          this.navCtrl.push(CompleteProfilePage);
+        }
+      }
+    )
   }
+
+  // goToCompleteProfile(params){
+  //   if (!params) params = {};
+  //   this.navCtrl.push(CompleteProfilePage);
+  // }goToHome(params){
+  //   if (!params) params = {};
+  //   this.navCtrl.push(HomePage);
+  // }
 }

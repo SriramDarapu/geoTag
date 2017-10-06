@@ -1,7 +1,7 @@
 <ion-content padding id="page5">
-  <form id="oTP-form2" class="child">
+  <form id="oTP-form2" class="child" (ngSubmit)="onSubmit(form)" #form="ngForm">
     <div>
-        <img src="assets/img/tEvv0laYTWymiLXNNWx4_person.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
+        <img src="assets/img/smartphone.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
     </div>
     <div class="spacer" style="width:300px;height:29px;" id="login-spacer4"></div>
     <ion-list id="oTP-list3">
@@ -9,12 +9,11 @@
         <ion-label floating>
           OTP
         </ion-label>
-        <ion-input type="number"></ion-input>
+        <ion-input type="number" ngModel name="otp"></ion-input>
       </ion-item>
     </ion-list>
     <div class="spacer" style="width:300px;height:24px;" id="oTP-spacer7"></div>
-    <button id="oTP-button3" ion-button color="positive" block on-click="goToCompleteProfile()">
-      <!-- <ion-icon name="checkmark"></ion-icon> -->
+    <button id="oTP-button3" ion-button color="positive" type="submit" block>
       Verify
     </button>
   </form>

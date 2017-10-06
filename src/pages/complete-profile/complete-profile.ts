@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { HomePage } from '../home/home';
+import { UserDataService } from '../../services/user-data.service';
 
 @Component({
   selector: 'page-complete-profile',
   templateUrl: 'complete-profile.html'
 })
-export class CompleteProfilePage {
+export class CompleteProfilePage implements OnInit {
 
-  constructor(public navCtrl: NavController) {
+  data = [];
+
+  constructor(public navCtrl: NavController, private userDataService: UserDataService) {
   }
-  goToHome(params){
-    if (!params) params = {};
-    this.navCtrl.setRoot(HomePage);
+
+  ngOnInit() {
+    this.data.push(this.userDataService.getUserData());
   }
+  
 }
