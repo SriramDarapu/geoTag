@@ -6,7 +6,8 @@ export class UserDataService {
         id: '',
         name: '',
         phone: '',
-        email: ''
+        email: '',
+        profilePic: ''
     };
 
     imageData = '';
@@ -21,6 +22,7 @@ export class UserDataService {
         this.userData['name'] = data.name;
         this.userData['phone'] = data.phone;
         this.userData['email'] = data.email;
+        this.userData['profilePic'] = data.profilePicture;
     }
 
     setImageData(image: string) {

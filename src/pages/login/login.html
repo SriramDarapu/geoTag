@@ -1,5 +1,5 @@
 <ion-content padding id="page4">
-  <form id="login-form1" class="child" (ngSubmit)="onSubmit(regForm)" #regForm="ngForm">
+  <form id="login-form1" class="child" (ngSubmit)="onSubmit(regForm)" #regForm="ngForm" novalidate>
     <div>
       <img src="assets/img/avatar.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
     </div>
@@ -10,13 +10,13 @@
         <ion-label floating>
           Mobile Number
         </ion-label>
-        <ion-input type="number" name="phone" ngModel></ion-input>
+        <ion-input clearInput type="tel" minlength="10" maxlength="10" name="phone" ngModel required></ion-input>
       </ion-item>
       <ion-item id="login-input2">
         <ion-label floating>
           Email ID
         </ion-label>
-        <ion-input type="email" name="email" ngModel></ion-input>
+        <ion-input clearInput type="email" name="email" ngModel required></ion-input>
       </ion-item>
     </ion-list>
     <div class="spacer" style="width:300px;height:24px;" id="login-spacer5"></div>

@@ -1,7 +1,12 @@
 import { Component } from '@angular/core';
 import { NavController, ActionSheetController, Platform } from 'ionic-angular';
+
+import { Storage } from '@ionic/storage';
+import md5 from 'crypto-md5';
+
 import { EditProfilePage } from '../edit-profile/edit-profile';
 import { UserDataService } from '../../services/user-data.service';
+
 
 @Component({
   selector: 'page-home',
@@ -17,10 +22,24 @@ export class HomePage {
     public navCtrl: NavController, 
     private actionSheetCtrl: ActionSheetController, 
     private platform: Platform, 
-    private userDataService: UserDataService
+    private userDataService: UserDataService,
+    private storage: Storage
   ) {  }
 
   ionViewDidLoad() {
+    this.storage.get('userObj').then((val) => {
+      if(val){
+        this.userData = val;
+        this.imageSrc = "https://www.gravatar.com/avatar/" + md5(val.email.toLowerCase(), 'hex');
+      }
+    });
+    this.storage.get('profilePicture').then(
+      (val) => {
+        if(val){
+          this.imageSrc = val;
+        }
+      }
+    )
     this.userData = this.userDataService.getUserData();
     const imgSrc = this.userDataService.getImageData();
     if(imgSrc) {

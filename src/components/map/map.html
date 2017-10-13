@@ -1,2 +1,17 @@
 <!-- Generated template for the MapComponent component -->
-<div #map id="map" style="height: 500px"></div>
+<div class="searchbar">
+    <ion-searchbar 
+        [(ngModel)]="autocomplete.query" 
+        [showCancelButton]="true" 
+        (ionInput)="updateSearch()" 
+        placeholder="Select Area ...">
+    </ion-searchbar>
+    <ion-list *ngIf="showSearchRes">
+        <ion-item *ngFor="let item of autocompleteItems" 
+            (click)="chooseItem(item)">
+            <ion-icon name="pin" item-start color="danger"></ion-icon>
+            {{ item.description }}
+        </ion-item>
+    </ion-list>
+</div>
+<div id="map" style="height: 550px;"></div>
