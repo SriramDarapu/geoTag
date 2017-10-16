@@ -1,9 +1,6 @@
-import { Component, NgZone, OnInit } from '@angular/core';
-import { Platform, Events, AlertController, ViewController } from 'ionic-angular';
-
-import { GoogleMaps, GoogleMap, GoogleMapsEvent, GoogleMapOptions } from '@ionic-native/google-maps';
-import { Geolocation } from '@ionic-native/geolocation';
-import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult } from '@ionic-native/native-geocoder';
+import { Component, OnInit } from '@angular/core';
+import { ViewController, AlertController } from 'ionic-angular';
+import { NativeGeocoder, NativeGeocoderForwardResult } from '@ionic-native/native-geocoder';
 
 /**
  * Generated class for the MapComponent component.
@@ -26,39 +23,22 @@ export class MapComponent implements OnInit {
   placesService: any;
   showSearchRes: any;
 
-  zone:any;
-  map: GoogleMap;
-  mapElement: HTMLElement;
+  address:any = {
+    place: '',
+    set: false,
+  };
+  markers = [];
+  placedetails: any;
 
-  classTransActive:boolean = false;
+  map: any;
+  infoWindow: any;
+  marker: any;
 
-  constructor(
-    platform: Platform,
-    public googleMaps: GoogleMaps,
-    public events: Events,
-    private geolocation: Geolocation,
-    public ngZone: NgZone,
-    public alertCtrl: AlertController,
-    private viewCtrl: ViewController,
-    private nativeGeocoder: NativeGeocoder
-  ) {
-
-    this.zone = new NgZone({ enableLongStackTrace: false });
-
-    platform.ready().then(() => {
-
-      this.loadMap();
-
-    });
-
-    events.subscribe('map:block', (bloquar:boolean) => {
-
-      if(this.map){
-
-        this.map.setClickable(!bloquar);
-      }
-
-    });
+  constructor(private viewCtrl: ViewController, private nativeGeocoder: NativeGeocoder, private alertCtrl: AlertController) {
+    let that = this;
+    setTimeout(() => {
+      that.initMap();
+    }, 2000);
   }
 
   ngOnInit() {
@@ -67,60 +47,103 @@ export class MapComponent implements OnInit {
     this.autocompleteItems = [];
     this.autocomplete = {
         query: ''
-    };        
+    };    
+    this.initMap();
+    this.initPlacedetails();    
   }
 
-  // dismiss() {
-  //     this.viewCtrl.dismiss();
+  private initMap() {
+    let that = this;
+    var point = {lat: -34.603684, lng: -58.381559}; 
+    let divMap = (<HTMLInputElement>document.getElementById('map'));
+    this.map = new google.maps.Map(divMap, {
+        center: point,
+        zoom: 15,
+        disableDefaultUI: true,
+        zoomControl: true
+    });
+    this.infoWindow = new google.maps.InfoWindow;
+    
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        var pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        that.alertCtrl.create({
+          title: 'Your Location Coordinates!',
+          subTitle: `lat: ${pos.lat}, long: ${pos.lng}`,
+          buttons: ['OK']
+        }).present();
+        that.infoWindow.setPosition(new google.maps.LatLng(pos.lat, pos.lng));
+        that.infoWindow.setContent('Location found.');
+        that.infoWindow.open(this.map);
+        that.map.setCenter(pos);
+        that.createMapMarker(pos);
+        that.marker = new google.maps.Marker({
+          position: pos,
+          map: that.map,
+          title: 'Hello World!'
+        });
+      }, function() {
+        that.handleLocationError(true, that.infoWindow, that.map.getCenter(), that.map);
+      });
+    } else {
+      // Browser doesn't support Geolocation
+      this.handleLocationError(false, this.infoWindow, this.map.getCenter(), this.map);
+    }
+  }
+
+
+  // initMap() {
+  //   let that = this;
+  //   that.map = new google.maps.Map(document.getElementById('map'), {
+  //     center: {lat: -34.397, lng: 150.644},
+  //     zoom: 16
+  //   });
+  //   that.infoWindow = new google.maps.InfoWindow;
+
+  //   // Try HTML5 geolocation.
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(function(position) {
+  //       var pos = {
+  //         lat: position.coords.latitude,
+  //         lng: position.coords.longitude
+  //       };
+
+  //       that.infoWindow.setPosition(pos);
+  //       that.infoWindow.setContent('Location found.');
+  //       that.infoWindow.open(that.map);
+  //       that.map.setCenter(pos);
+  //       that.marker = new google.maps.Marker({
+  //         position: pos,
+  //         map: that.map,
+  //         title: 'Hello World!'
+  //       });
+  //     }, function() {
+  //       that.handleLocationError(true, that.infoWindow, that.map.getCenter(), that.map);
+  //     });
+  //   } else {
+  //     // Browser doesn't support Geolocation
+  //     that.handleLocationError(false, that.infoWindow, that.map.getCenter(), that.map);
+  //   }
   // }
 
+  handleLocationError(browserHasGeolocation, infoWindow, pos, map) {
+    infoWindow.setPosition(pos);
+    infoWindow.setContent(browserHasGeolocation ?
+                          'Error: The Geolocation service failed.' :
+                          'Error: Your browser doesn\'t support geolocation.');
+    infoWindow.open(map);
+  }
+
   chooseItem(item: any) {
-    this.showSearchRes = false;
-      console.log('modal > chooseItem > item > ', item);
-      // this.alertCtrl.create({
-      //   title: 'Your Location Coordinates!',
-      //   subTitle: `Selected item: ${item.description}`,
-      //   buttons: ['OK']
-      // }).present();
-      this.nativeGeocoder.forwardGeocode(item.description)
-      .then(
-        (coordinates: NativeGeocoderForwardResult) => {
-          const lat:any = coordinates.latitude;
-          const long: any = coordinates.longitude;
-          // this.alertCtrl.create({
-          //   title: 'Your Location Coordinates!',
-          //   subTitle: 'The coordinates are latitude=' + coordinates.latitude + ' and longitude=' + coordinates.longitude,
-          //   buttons: ['OK']
-          // }).present();
-          this.map.animateCamera({
-            target: {
-              lat: coordinates.latitude,
-              lng: coordinates.longitude
-            },
-            zoom: 15,
-            duration: 1000
-          });
-          
-          this.map.addMarker({
-            title: 'Your Location',
-            icon: 'blue',
-            animation: 'DROP',
-            position: {
-              lat: lat,
-              lng: long
-            }
-          })
-          .then(marker => {
-            marker.on(GoogleMapsEvent.MARKER_CLICK)
-              .subscribe(() => {
-                
-              });
-          });
-          console.log('The coordinates are latitude=' + coordinates.latitude + ' and longitude=' + coordinates.longitude)
-        }
-      )
-      .catch((error: any) => console.log(error));
-      this.viewCtrl.dismiss(item);
+    let self = this;
+    self.showSearchRes = false;
+    console.log('modal > chooseItem > item > ', item);
+    self.getPlaceDetail(item.place_id);
+    // self.viewCtrl.dismiss(item);
   }
 
   updateSearch() {
@@ -145,99 +168,75 @@ export class MapComponent implements OnInit {
       });
   }
 
-  loadMap() {
-    
-    let mapOptions: GoogleMapOptions = {
-      camera: {
-        target: {
-          lat: 17.4075691,
-          lng: 78.3823673
-        },
-        zoom: 10,
-      },
-      controls:{
-        myLocationButton:false,
-        compass:false,
-        mapToolbar:false
-      },
-      preferences:{
-
-        padding: {
-
-          bottom: 60
-        },
-      }
+  getPlaceDetail(place_id:string):void {
+    var self = this;
+    var request = {
+        placeId: place_id
     };
-
-    this.mapElement = document.getElementById('map');
-    this.map = this.googleMaps.create(this.mapElement, mapOptions);
-
-    this.map.on(GoogleMapsEvent.MAP_READY).subscribe(() => {
-
-      this.map.addMarker({
-        title: 'Your Location',
-        icon: 'blue',
-        animation: 'DROP',
-        position: {
-          lat: 17.4075691,
-          lng: 78.3823673
+    self.alertCtrl.create({
+      title: 'Your Location Coordinates!',
+      subTitle: `Selected item: ${place_id}`,
+      buttons: ['OK']
+    }).present();
+    this.placesService = new google.maps.places.PlacesService(this.map);
+    this.placesService.getDetails(request, callback);
+    function callback(place, status) {
+        if (status == google.maps.places.PlacesServiceStatus.OK) {
+            console.log('page > getPlaceDetail > place > ', place);
+            // set full address
+            self.placedetails.address = place.formatted_address;
+            self.placedetails.lat = place.geometry.location.lat();
+            self.placedetails.lng = place.geometry.location.lng();
+            for (var i = 0; i < place.address_components.length; i++) {
+                let addressType = place.address_components[i].types[0];
+                let values = {
+                    short_name: place.address_components[i]['short_name'],
+                    long_name: place.address_components[i]['long_name']
+                }
+                if(self.placedetails.components[addressType]) {
+                    self.placedetails.components[addressType].set = true;
+                    self.placedetails.components[addressType].short = place.address_components[i]['short_name'];
+                    self.placedetails.components[addressType].long = place.address_components[i]['long_name'];
+                }                                     
+            }                  
+            // set place in map
+            self.map.setCenter(place.geometry.location);
+            self.createMapMarker(place);
+            // populate
+            self.address.set = true;
+            console.log('page > getPlaceDetail > details > ', self.placedetails);
+        }else{
+            console.log('page > getPlaceDetail > status > ', status);
         }
-      })
-      .then(marker => {
-        marker.on(GoogleMapsEvent.MARKER_CLICK)
-          .subscribe(() => {
-            
-          });
-      });
-      this.map.setMyLocationEnabled(true);
-      this.locateMe();
-
-    });
-
-    this.map.on(GoogleMapsEvent.CAMERA_MOVE_START).subscribe(() => {
-
-      this.toggleTrans(true);
-    });
-
-    this.map.on(GoogleMapsEvent.CAMERA_MOVE_END).subscribe(() => {
-
-      this.toggleTrans(false);
-    });
+    }
   }
 
-
-  toggleTrans(active){
-    this.zone.run(() => {
-      this.classTransActive = active;
-    });
+  createMapMarker(place:any):void {
+    var placeLoc = place.geometry.location;
+    var marker = new google.maps.Marker({
+      map: this.map,
+      position: placeLoc
+    });    
+    this.markers.push(marker);
   }
 
-
-  locateMe(){
-
-    this.geolocation.getCurrentPosition().then((resp) => {
-
-      this.alertCtrl.create({
-        title: 'Your Location Coordinates!',
-        subTitle: `lat: ${resp.coords.latitude}, long: ${resp.coords.longitude}`,
-        buttons: ['OK']
-      }).present();
-      this.map.animateCamera({
-        target: {
-          lat: resp.coords.latitude,
-          lng: resp.coords.longitude
-        },
-        zoom: 15,
-        duration: 1000
-      });
-
-    }).catch((error) => {
-      this.alertCtrl.create({
-        title: 'Error!',
-        subTitle: `Error: ${error}`,
-        buttons: ['OK']
-      }).present();
-    });
-  }
+  initPlacedetails() {
+    this.placedetails = {
+        address: '',
+        lat: '',
+        lng: '',
+        components: {
+            route: { set: false, short:'', long:'' },                           // calle 
+            street_number: { set: false, short:'', long:'' },                   // numero
+            sublocality_level_1: { set: false, short:'', long:'' },             // barrio
+            locality: { set: false, short:'', long:'' },                        // localidad, ciudad
+            administrative_area_level_2: { set: false, short:'', long:'' },     // zona/comuna/partido 
+            administrative_area_level_1: { set: false, short:'', long:'' },     // estado/provincia 
+            country: { set: false, short:'', long:'' },                         // pais
+            postal_code: { set: false, short:'', long:'' },                     // codigo postal
+            postal_code_suffix: { set: false, short:'', long:'' },              // codigo postal - sufijo
+        }    
+    };        
+  }   
 
 }
