@@ -10,7 +10,9 @@ export class SharedService {
         let toast = this.toastCtrl.create({
           message: text,
           duration: 3000,
-          position: 'top'
+          position: 'top',
+          showCloseButton: true,
+          closeButtonText: 'Ok'
         });
         toast.present();
     }

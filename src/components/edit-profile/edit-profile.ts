@@ -221,7 +221,11 @@ export class EditProfileComponent implements OnInit {
    
     // File name only
     var filename = this.lastImage;
-   
+    this.alertCtrl.create({
+      title: 'INFO!',
+      subTitle: `ID: ${this.data.id}`,
+      buttons: ['OK']
+    }).present();
     var options = {
       fileKey: "file",
       fileName: filename,

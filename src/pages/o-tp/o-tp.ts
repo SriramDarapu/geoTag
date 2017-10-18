@@ -35,7 +35,7 @@ export class OTPPage {
       (res) => {
         if(res.success) {
           console.log(res.success.data.data);        
-          this.userDataService.setUserData(res.success.data.data[0]);
+          this.userDataService.setUserData(res.success.data.data);
           this.navCtrl.push(CompleteProfilePage);
         }else if(res.error) {
           this.sharedService.presentToast(res.error.description);
@@ -45,12 +45,4 @@ export class OTPPage {
       }
     )
   }
-
-  // goToCompleteProfile(params){
-  //   if (!params) params = {};
-  //   this.navCtrl.push(CompleteProfilePage);
-  // }goToHome(params){
-  //   if (!params) params = {};
-  //   this.navCtrl.push(HomePage);
-  // }
 }

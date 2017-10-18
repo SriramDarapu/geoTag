@@ -213,9 +213,11 @@ export class MapComponent implements OnInit {
 
   createMapMarker(place:any):void {
     var placeLoc = place.geometry.location;
+    let image = "assets/img/store.png";
     var marker = new google.maps.Marker({
       map: this.map,
-      position: placeLoc
+      position: placeLoc,
+      icon: image
     });    
     this.markers.push(marker);
   }
