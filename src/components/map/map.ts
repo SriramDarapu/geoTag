@@ -54,38 +54,56 @@ export class MapComponent implements OnInit {
 
   private initMap() {
     let that = this;
-    var point = {lat: -34.603684, lng: -58.381559}; 
-    let divMap = (<HTMLInputElement>document.getElementById('map'));
-    this.map = new google.maps.Map(divMap, {
-        center: point,
-        zoom: 15,
-        disableDefaultUI: true,
-        zoomControl: true
-    });
-    this.infoWindow = new google.maps.InfoWindow;
+    // var point = {lat: -34.603684, lng: -58.381559}; 
+    // let divMap = (<HTMLInputElement>document.getElementById('map'));
+    // this.map = new google.maps.Map(divMap, {
+    //     center: point,
+    //     zoom: 15,
+    //     // disableDefaultUI: true,
+    //     zoomControl: true
+    // });
+    // this.infoWindow = new google.maps.InfoWindow;
     
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
+        var location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
         var pos = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
         that.alertCtrl.create({
-          title: 'Your Location Coordinates!',
+          title: 'Your Location Coordinates from InitMap!',
           subTitle: `lat: ${pos.lat}, long: ${pos.lng}`,
           buttons: ['OK']
         }).present();
-        that.infoWindow.setPosition(new google.maps.LatLng(pos.lat, pos.lng));
-        that.infoWindow.setContent('Location found.');
-        that.infoWindow.open(this.map);
-        that.map.setCenter(pos);
-        that.createMapMarker(pos);
+        let divMap = (<HTMLInputElement>document.getElementById('map'));
+        that.map = new google.maps.Map(divMap, {
+            center: location,
+            zoom: 16,
+            // disableDefaultUI: true,
+            zoomControl: true
+        });
+        // Create a marker and set its position.
         that.marker = new google.maps.Marker({
-          position: pos,
-          map: that.map,
+          // map: this.map,
+          position: location,
           title: 'Hello World!'
         });
+
+        that.marker.setMap(that.map);
+        // marker.setMap(this.map);
+        // this.infoWindow = new google.maps.InfoWindow;
+        // that.infoWindow.setPosition(location);
+        // that.infoWindow.setContent('Location found.');
+        // that.infoWindow.open(this.map);
+        // that.map.setCenter(pos);
+        // this.createMapMarker(pos);
+        // that.marker = new google.maps.Marker({
+        //   position: pos,
+        //   map: that.map,
+        //   title: 'Hello World!'
+        // });
       }, function() {
         that.handleLocationError(true, that.infoWindow, that.map.getCenter(), that.map);
       });

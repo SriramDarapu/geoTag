@@ -1,6 +1,9 @@
+// import { Subject } from "rxjs";
+import { Injectable } from "@angular/core";
+
 // import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 // import { Geolocation } from '@ionic-native/geolocation';
-
+@Injectable()
 export class UserDataService {
     userData = {
         id: '',
@@ -12,10 +15,19 @@ export class UserDataService {
 
     imageData = '';
 
+    isEditable = false;
+    
+    // public mysubject: Subject<any> = new Subject();
+
     // constructor(
     //     private geolocation: Geolocation,
     //     private nativeGeocoder: NativeGeocoder
     // ) {}
+
+    setEditVal() {
+        this.isEditable = true;
+        // this.mysubject.next({isEdit: true});
+    }
 
     setUserData(data: any) {
         this.userData['id'] = data._id;
@@ -27,6 +39,10 @@ export class UserDataService {
 
     setImageData(image: string) {
         this.imageData = image;
+    }
+
+    getEditable() {
+        return this.isEditable;
     }
 
     getUserData() {

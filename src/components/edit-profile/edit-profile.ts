@@ -39,6 +39,8 @@ export class EditProfileComponent implements OnInit {
   userObj = null;
   profilePicture: any = "https://www.gravatar.com/avatar/";
 
+  allowEdit = false;
+
   constructor(
     public navCtrl: NavController, 
     private actionSheetCtrl: ActionSheetController, 
@@ -63,7 +65,15 @@ export class EditProfileComponent implements OnInit {
       console.log('Your age is', val);
       this.userObj = val;
       this.profilePicture = "https://www.gravatar.com/avatar/" + md5(this.data.email.toLowerCase(), 'hex');
+      if(val) {
+        this.data = val;
+      }
     });
+    // this.userDataService.mysubject.subscribe((data: any) => {
+    //   alert(`Is Editable: ${data.isEdit}`);
+    // });
+    alert(`Is Editable: ${this.userDataService.getEditable()}`);
+    this.allowEdit = this.userDataService.getEditable();
     // this.loc = this.userDataService.getCurrentLocation();
     // this.data.location = this.loc.subLocality;
     this.geolocation.getCurrentPosition().then((resp) => {
@@ -92,19 +102,49 @@ export class EditProfileComponent implements OnInit {
     dataObj['dob'] = this.data.dob;
     dataObj['id'] = this.data.id;
     console.log(dataObj);
-    
-    this.authService.completeProfile(dataObj).subscribe(
-      (res) => {
-        if(res.success) {
-          if(!this.userObj){
-            this.storage.set('userObj', dataObj);
+    this.loading = this.loadingCtrl.create({
+      content: 'Updating...',
+    });
+    this.loading.present();
+    // alert(`onSubmit is clicked: ${JSON.stringify(dataObj)}`);
+    if(!this.allowEdit) {
+      this.authService.completeProfile(dataObj).subscribe(
+        (res) => {
+          this.loading.dismissAll();
+          if(res.success) {
+            if(!this.userObj){
+              this.storage.set('userObj', dataObj);
+            }
+            this.userDataService.setUserData(dataObj);
+            console.log(res.message);
+            this.goToHome();
           }
-          this.userDataService.setUserData(dataObj);
-          console.log(res.message);
-          this.goToHome();
         }
-      }
-    )
+      )
+    } else {
+      // alert('In else statement');
+      this.authService.updateUserProfile(dataObj).subscribe(
+        (res) => {
+          // alert(`In Res function ${JSON.stringify(res)}`);
+          this.loading.dismissAll();
+          if(res.success) {
+            // if(!this.userObj){
+            this.storage.set('userObj', dataObj);
+            // }
+            this.data = dataObj;
+            // this.navCtrl.push(HomePage);
+            this.userDataService.setUserData(dataObj);
+            this.sharedService.presentToast(res.success.data.response);
+            console.log(res.message);
+            this.goToHome();
+          }else if(res.error) {
+            this.sharedService.presentToast(res.error.description);
+          }else {
+            this.sharedService.presentToast("Something went wrong!");
+          }
+        }
+      )
+    }
   }
 
   goToHome(){

@@ -20,6 +20,7 @@ import { LoginPage } from '../pages/login/login';
 export class MyApp {
   @ViewChild(Nav) navCtrl: Nav;
     rootPage:any;
+    // rootPage: any = HomePage;
 
   constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, private storage: Storage) {
     platform.ready().then(() => {

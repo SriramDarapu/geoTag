@@ -31,6 +31,7 @@ export class HomePage {
       if(val){
         this.userData = val;
         this.imageSrc = "https://www.gravatar.com/avatar/" + md5(val.email.toLowerCase(), 'hex');
+        this.userDataService.setUserData(val);
       }
     });
     this.storage.get('profilePicture').then(
@@ -41,6 +42,7 @@ export class HomePage {
       }
     )
     this.userData = this.userDataService.getUserData();
+    // alert(JSON.stringify(this.userData));
     const imgSrc = this.userDataService.getImageData();
     if(imgSrc) {
       this.imageSrc = imgSrc;
@@ -94,6 +96,7 @@ export class HomePage {
   }
 
   gotoEditProfile() {
+    this.userDataService.setEditVal();
     this.navCtrl.push(EditProfilePage);
   }
   

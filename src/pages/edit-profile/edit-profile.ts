@@ -15,7 +15,10 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class EditProfilePage {
 
+  isEditClicked = false;
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    // this.isEditClicked = navParams.get('isEditClicked');
   }
 
   ionViewDidLoad() {
