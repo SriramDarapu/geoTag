@@ -9,7 +9,10 @@
         <ion-label floating>
           OTP
         </ion-label>
-        <ion-input clearInput type="tel" minLength="6" maxLength="6" ngModel name="otp" required></ion-input>
+        <ion-input clearInput type="tel" minLength="6" maxLength="6" ngModel name="otp" pattern="[0-9]*" #otp="ngModel" required></ion-input>
+      </ion-item>
+      <ion-item no-lines [hidden]="otp.valid || otp.pristine">
+          <p class="has-error">Please enter a valid OTP.</p>
       </ion-item>
     </ion-list>
     <div class="spacer" style="width:300px;height:24px;" id="oTP-spacer7"></div>

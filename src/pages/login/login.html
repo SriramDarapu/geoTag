@@ -1,9 +1,42 @@
 <ion-content padding id="page4">
+  <form id="login-form1" class="child" (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+    <div>
+      <img src="assets/img/avatar.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
+    </div>
+    <div class="spacer" style="width:300px;height:29px;" id="login-spacer4"></div>
+    <ion-list id="login-list2">
+      <ion-item id="login-input1">
+        <ion-label floating>
+          Mobile Number
+        </ion-label>
+        <ion-input clearInput type="tel" minlength="10" maxlength="10" name="phone" formControlName="phone"></ion-input>
+      </ion-item>
+      <ion-item no-lines *ngIf="!loginForm.controls.phone.valid  && (loginForm.controls.phone.dirty || submitAttempt)">
+        <p class="has-error">Please enter a valid Mobile Number.</p>
+      </ion-item>
+      <ion-item id="login-input2">
+        <ion-label floating>
+          Email ID
+        </ion-label>
+        <ion-input clearInput type="email" name="email" formControlName="email"></ion-input>
+      </ion-item>
+      <ion-item no-lines *ngIf="!loginForm.controls.email.valid  && (loginForm.controls.email.dirty || submitAttempt)">
+        <p class="has-error">Please enter a valid Email ID.</p>
+      </ion-item>
+    </ion-list>
+    <div class="spacer" style="width:300px;height:24px;" id="login-spacer5"></div>
+    <button id="login-button1" ion-button color="positive" block type="submit" [disabled]="!loginForm.valid">
+      Submit
+    </button>
+  </form>
+</ion-content>
+
+
+<!-- <ion-content padding id="page4">
   <form id="login-form1" class="child" (ngSubmit)="onSubmit(regForm)" #regForm="ngForm" novalidate>
     <div>
       <img src="assets/img/avatar.png" style="display:block;width:40%;height:auto;margin-left:auto;margin-right:auto;" />
     </div>
-    <!-- <h1 style="text-align: center; color: white">GeoTag</h1>  style="background:url(http://iphone7papers.com/wp-content/uploads/papers.co-ns33-bicycle-dark-bw-minimal-nature-33-iphone6-wallpaper-250x444.jpg) no-repeat center;background-size:cover;" -->
     <div class="spacer" style="width:300px;height:29px;" id="login-spacer4"></div>
     <ion-list id="login-list2">
       <ion-item id="login-input1">
@@ -24,4 +57,4 @@
       Submit
     </button>
   </form>
-</ion-content>
+</ion-content> -->

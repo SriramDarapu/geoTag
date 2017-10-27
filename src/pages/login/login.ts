@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { OTPPage } from '../o-tp/o-tp';
 import { CompleteProfilePage } from '../complete-profile/complete-profile';
@@ -16,17 +16,28 @@ import { SharedService } from '../../services/shared.service';
 export class LoginPage {
 
   userData: any;
+  loginForm: FormGroup;
 
   constructor(
     public navCtrl: NavController, 
     private authService: AuthService, 
     public userDataService: UserDataService,
-    public sharedService: SharedService
+    public sharedService: SharedService, 
+    public formBuilder: FormBuilder
   ) {
+    let phoneRegex = '[0-9]*';
+    let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    this.loginForm = formBuilder.group({
+      phone: ['', Validators.compose([Validators.maxLength(10), Validators.pattern(phoneRegex), Validators.required])],
+      email: ['', Validators.compose([Validators.pattern(emailRegex), Validators.required])]
+    });
   }
 
-  onSubmit(form: NgForm) {
-    const data = form.value;
+  onSubmit() {
+
+    const data = this.loginForm.value;
+    // console.log(this.loginForm);
+    
     this.authService.signInUser(data).subscribe(
       (res) => {
         // console.log(res);

@@ -40,6 +40,7 @@ export class EditProfileComponent implements OnInit {
   profilePicture: any = "https://www.gravatar.com/avatar/";
 
   allowEdit = false;
+  emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
   constructor(
     public navCtrl: NavController, 
@@ -69,10 +70,17 @@ export class EditProfileComponent implements OnInit {
         this.data = val;
       }
     });
+    this.storage.get('profilePicture').then(
+      (pic) => {
+        if (pic) {
+          this.profilePicture = pic;
+        }
+      }
+    );
     // this.userDataService.mysubject.subscribe((data: any) => {
     //   alert(`Is Editable: ${data.isEdit}`);
     // });
-    alert(`Is Editable: ${this.userDataService.getEditable()}`);
+    // alert(`Is Editable: ${this.userDataService.getEditable()}`);
     this.allowEdit = this.userDataService.getEditable();
     // this.loc = this.userDataService.getCurrentLocation();
     // this.data.location = this.loc.subLocality;
@@ -89,7 +97,7 @@ export class EditProfileComponent implements OnInit {
               subTitle: location,
               buttons: ['OK']
             });
-            alert.present();
+            // alert.present();
           })
           .catch((error: any) => console.log(error));
     }).catch((error) => {
@@ -221,6 +229,7 @@ export class EditProfileComponent implements OnInit {
         this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
       }
     }, (err) => {
+      this.loading.dismissAll();
       this.sharedService.presentToast('Error while selecting image.');
     });
   }
@@ -239,6 +248,7 @@ export class EditProfileComponent implements OnInit {
       this.lastImage = newFileName;
       this.uploadImage();
     }, error => {
+      this.loading.dismissAll();
       this.sharedService.presentToast('Error while storing file.');
     });
   }
@@ -261,11 +271,11 @@ export class EditProfileComponent implements OnInit {
    
     // File name only
     var filename = this.lastImage;
-    this.alertCtrl.create({
-      title: 'INFO!',
-      subTitle: `ID: ${this.data.id}`,
-      buttons: ['OK']
-    }).present();
+    // this.alertCtrl.create({
+    //   title: 'INFO!',
+    //   subTitle: `ID: ${this.data.id}`,
+    //   buttons: ['OK']
+    // }).present();
     var options = {
       fileKey: "file",
       fileName: filename,

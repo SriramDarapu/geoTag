@@ -11,29 +11,68 @@
     <ion-label floating>
       Name
     </ion-label>
-    <ion-input type="text" placeholder="Name" name="name" [(ngModel)]="data.name"></ion-input>
+    <ion-input 
+      type="text" 
+      placeholder="Name" 
+      name="name" 
+      [(ngModel)]="data.name"
+      pattern="[a-zA-Z][a-zA-Z ]+"
+      #name="ngModel"
+    ></ion-input>
+  </ion-item>
+  <ion-item no-lines [hidden]="name.valid || name.pristine">
+      <p class="has-error">Please enter a valid Name.</p>
   </ion-item>
   <ion-item id="completeProfile-input7">
     <ion-label floating>
       Mobile Number
     </ion-label>
-    <ion-input type="text" placeholder="Mobile Number" name="phone" [(ngModel)]="data.phone"></ion-input>
+    <ion-input 
+      type="text" 
+      placeholder="Mobile Number" 
+      name="phone" 
+      [(ngModel)]="data.phone"
+      pattern="[0-9]*"
+      #phone="ngModel" 
+    ></ion-input>
+  </ion-item>
+  <ion-item no-lines [hidden]="phone.valid || phone.pristine">
+      <p class="has-error">Please enter a valid Mobile Number.</p>
   </ion-item>
   <ion-item id="completeProfile-input8">
     <ion-label floating>
       Email ID
     </ion-label>
-    <ion-input type="email" placeholder="Email ID" name="email" [(ngModel)]="data.email"></ion-input>
+    <ion-input 
+      type="email" 
+      placeholder="Email ID" 
+      name="email" 
+      [(ngModel)]="data.email"
+      [pattern]="emailRegex" 
+      #email="ngModel"
+    ></ion-input>
+  </ion-item>
+  <ion-item no-lines [hidden]="email.valid || email.pristine">
+      <p class="has-error">Please enter a valid Email ID.</p>
   </ion-item>
   <ion-item>
     <ion-label floating>Date of Birth</ion-label>
-    <ion-datetime displayFormat="MMM DD YYYY" [(ngModel)]="data.dob" name="dob"></ion-datetime>
+    <ion-datetime displayFormat="MMM DD YYYY" [(ngModel)]="data.dob" name="dob" required></ion-datetime>
   </ion-item>
   <ion-item id="completeProfile-input10">
     <ion-label floating>
       Location
     </ion-label>
-    <ion-input type="text" name="location" [(ngModel)]="data.location"></ion-input>
+    <ion-input 
+      type="text" 
+      name="location" 
+      [(ngModel)]="data.location"
+      pattern="[a-zA-Z][a-zA-Z ]+"
+      #location="ngModel"
+    ></ion-input>
+  </ion-item>
+  <ion-item no-lines [hidden]="location.valid || location.pristine">
+      <p class="has-error">Please enter a valid Location.</p>
   </ion-item>
   <div class="spacer" style="width:300px;height:48px;" id="completeProfile-spacer11"></div>
   <button id="completeProfile-button4" ion-button color="positive" block type="submit">
